@@ -93,6 +93,12 @@ def extract_data(path_to_csv):
   csvfile = open(path_to_csv)
   return csv.DictReader(csvfile)
 
+def write(unique_words, csv_path):
+  dirname = os.path.dirname(csv_path)
+  with open(os.path.join(dirname, 'word_count.txt'), 'w') as output:
+    for word, occurence in unique_words.iteritems():
+      output.write('%s:  %s\n' % (word, occurence))
+
 def main():
   # Check if the number of arguments is correct.
   # argv is conventionally used in programming languages to represent the
@@ -125,9 +131,7 @@ def main():
   else:
     words = enumerate_all_columns(data)
 
-  for word, occurence in words.iteritems():
-    print('%s:  %s' % (word, occurence))
-
+  write(words)
 
 # The following if condition will check if this module is running via the
 # command line. Alternatively, this could be imported as a module in a separate
