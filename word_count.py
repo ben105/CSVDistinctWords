@@ -39,6 +39,7 @@ def enumerate_all_columns(csv_data):
         continue
       words = cell.split(' ')
       for word in words:
+        word = word.lower()
         unique_words[word] = unique_words.get(word, 0) + 1
   return unique_words
         
