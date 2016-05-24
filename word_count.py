@@ -19,6 +19,25 @@ import csv
 # command line (CSV file path, and column name).
 import sys
 
+def enumerate_all_columns(csv_data):
+  """enumerate_all_columns will iterate over each row, counting all words of
+  all columns.
+
+  Args:
+    csv_data - This is the list of dictionaries that was read into memory.
+
+  Returns:
+    A Python dictionary representing the unique words, and their occurence.
+  """
+  unique_words = {}
+  for row in csv_data:
+    for _, cell in row.iteritems():
+      words = cell.split(' ')
+      for word in words:
+        unique_words[word] = unique_words.get(word, 0) + 1
+  return unique_words
+        
+
 def enumerate_column(csv_data, column_name):
   """enumerate_column will iterate over each row, counting unique occurences.
 
@@ -41,14 +60,16 @@ def enumerate_column(csv_data, column_name):
   # Start with an empty dictionary.
   unique_words = {}
   for row in csv_data:
-    # Get the word that exists on this row, for the given column name.
-    word = str(row[column_name])
-    # This next line does the magic to increment the occurence.
-    # The "get" function will try to get the value if it exists in the
-    # dictionary. If it doesn't, it will return the default value, which in
-    # this case is 0. So the first time the word appears, it will be set to
-    # 0 + 1.
-    unique_words[word] = unique_words.get(word, 0) + 1
+    # Get the cell that exists on this row, for the given column name.
+    cell = str(row[column_name])
+    words = cell.split(' ')
+    for word in words:
+      # This next line does the magic to increment the occurence.
+      # The "get" function will try to get the value if it exists in the
+      # dictionary. If it doesn't, it will return the default value, which in
+      # this case is 0. So the first time the word appears, it will be set to
+      # 0 + 1.
+      unique_words[word] = unique_words.get(word, 0) + 1
   return unique_words
 
 def extract_data(path_to_csv):
@@ -78,21 +99,31 @@ def main():
   # variable list of arguments provided on the command line.
   # We would expect there to be 3 arguments, because the first argument is the
   # script name (i.e. word_count.py, C:\...\sample.csv, and ColumnName).
-  if len(sys.argv) < 3:
+  if len(sys.argv) < 2:
     # There is an incorrect number of arguments, so print to the screen an
     # example on how to run the command.
     print('usage: C:\Python27\Python.exe '
-          'C:\users\eriknix\Desktop\word_count.py <path to CSV> <Column Name>')
+          'C:\users\eriknix\Desktop\word_count.py <path to CSV> '
+          '[<Column Name>]')
     # Use the sys module to exit now, with a status of 1 (1 means general
     # failure).
     sys.exit(1)
 
   # sys.argv[0] is the script name.
   csv_path = sys.argv[1]
-  column_name = sys.argv[2]
+  column_name = None
+  if len(sys.argv) > 2:
+    column_name = sys.argv[2]
 
   data = extract_data(csv_path)
-  words = enumerate_column(data, column_name)
+
+  # If the column name was specified in the command line, then we run this
+  # version.
+  if column_name:
+    words = enumerate_column(data, column_name)
+  # Else we will run the all_columns.
+  else:
+    words = enumerate_all_columns(data)
 
   for word, occurence in words.iteritems():
     print('%s:  %s' % (word, occurence))
