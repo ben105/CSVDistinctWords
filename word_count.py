@@ -14,6 +14,7 @@ C:\Python27\Python.exe word_count.py C:\users\eriknix\Desktop\sample.csv Column
 # format.
 import csv
 
+import operator
 import os
 
 # This module provides access to some variables used or maintained by the
@@ -98,7 +99,8 @@ def extract_data(path_to_csv):
 def write(unique_words, csv_path):
   dirname = os.path.dirname(csv_path)
   with open(os.path.join(dirname, 'word_count.txt'), 'w') as output:
-    for word, occurence in unique_words.iteritems():
+    sorted_list = sorted(unique_words.items(), key=operator.itemgetter(1))
+    for word, occurence in sorted_list:
       output.write('%s:  %s\n' % (word, occurence))
 
 def main():
