@@ -14,6 +14,8 @@ C:\Python27\Python.exe word_count.py C:\users\eriknix\Desktop\sample.csv Column
 # format.
 import csv
 
+import os
+
 # This module provides access to some variables used or maintained by the
 # interpreter. This script will use it to read the arguments provided on the
 # command line (CSV file path, and column name).
@@ -131,7 +133,7 @@ def main():
   else:
     words = enumerate_all_columns(data)
 
-  write(words)
+  write(words, csv_path)
 
 # The following if condition will check if this module is running via the
 # command line. Alternatively, this could be imported as a module in a separate
